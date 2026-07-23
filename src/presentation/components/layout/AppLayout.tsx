@@ -10,6 +10,8 @@ import {
   ChevronDown,
   ClipboardList,
   Users,
+  FileText,
+  FileCheck,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/presentation/hooks/useAuth'
@@ -23,9 +25,21 @@ export function AppLayout() {
   const configActive = location.pathname.startsWith('/app/configuracion')
   const [configExpanded, setConfigExpanded] = useState(configActive)
 
+  const docsActive = location.pathname.startsWith('/app/documentos')
+  const [docsExpanded, setDocsExpanded] = useState(docsActive || true)
+
   useEffect(() => {
     if (configActive) setConfigExpanded(true)
-  }, [configActive])
+    if (docsActive) setDocsExpanded(true)
+  }, [configActive, docsActive])
+
+  const toggleDocs = () => {
+    if (docsActive) {
+      setDocsExpanded(true)
+      return
+    }
+    setDocsExpanded((v) => !v)
+  }
 
   const handleLogout = async () => {
     await logout()
@@ -92,6 +106,50 @@ export function AppLayout() {
             <Users size={18} className="sidebar__link-icon" />
             <span className="sidebar__label">Pacientes</span>
           </NavLink>
+
+          <div
+            className={`sidebar__group ${docsExpanded ? 'sidebar__group--open' : ''}`}
+          >
+            <button
+              type="button"
+              className={`sidebar__link sidebar__group-toggle ${docsActive ? 'sidebar__link--parent-active' : ''}`}
+              title="Documentos"
+              aria-expanded={docsExpanded}
+              onClick={toggleDocs}
+            >
+              <FileText size={18} className="sidebar__link-icon" />
+              <span className="sidebar__label">Documentos</span>
+              <ChevronDown size={16} className="sidebar__chevron sidebar__label" />
+            </button>
+
+            {docsExpanded && (
+              <div className="sidebar__submenu">
+                <NavLink
+                  to="/app/documentos/historia-clinica-ocupacional"
+                  title="Historia Clínica Ocupacional"
+                  className={({ isActive }) =>
+                    `sidebar__link sidebar__sublink ${isActive ? 'sidebar__link--active' : ''}`
+                  }
+                  onClick={closeMobile}
+                >
+                  <FileCheck size={18} className="sidebar__link-icon" />
+                  <span className="sidebar__label">Historia Clínica Ocupacional</span>
+                </NavLink>
+
+                <NavLink
+                  to="/app/documentos/certificado-medico-ocupacional"
+                  title="Certificado - Evaluación Médica Ocupacional"
+                  className={({ isActive }) =>
+                    `sidebar__link sidebar__sublink ${isActive ? 'sidebar__link--active' : ''}`
+                  }
+                  onClick={closeMobile}
+                >
+                  <FileCheck size={18} className="sidebar__link-icon" />
+                  <span className="sidebar__label">Certificado Ocupacional</span>
+                </NavLink>
+              </div>
+            )}
+          </div>
 
           <div
             className={`sidebar__group ${configExpanded ? 'sidebar__group--open' : ''}`}

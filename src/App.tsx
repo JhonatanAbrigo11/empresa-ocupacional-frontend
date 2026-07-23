@@ -10,6 +10,8 @@ import { PatientProfilePage } from '@/presentation/pages/PatientProfilePage'
 import { HistoryFoldersPage } from '@/presentation/pages/HistoryFoldersPage'
 import { ClinicalHistoryPage } from '@/presentation/pages/ClinicalHistoryPage'
 import { UsersPage } from '@/presentation/pages/UsersPage'
+import { HistoriaClinicaOcupacionalPage } from '@/presentation/pages/HistoriaClinicaOcupacionalPage'
+import { CertificadoOcupacionalPage } from '@/presentation/pages/CertificadoOcupacionalPage'
 import '@/presentation/styles/app.css'
 
 export default function App() {
@@ -32,6 +34,14 @@ export default function App() {
               <Route
                 path="pacientes/:id/historial/:folderId"
                 element={<ClinicalHistoryPage />}
+              />
+              <Route
+                path="documentos/historia-clinica-ocupacional"
+                element={<HistoriaClinicaOcupacionalPage />}
+              />
+              <Route
+                path="documentos/certificado-medico-ocupacional"
+                element={<CertificadoOcupacionalPage />}
               />
               <Route path="configuracion/usuarios" element={<UsersPage />} />
             </Route>
