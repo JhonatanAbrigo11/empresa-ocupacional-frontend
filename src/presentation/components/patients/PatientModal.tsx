@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { X, User, Briefcase, HeartHandshake, Phone } from 'lucide-react'
+import { X, User, Briefcase, HeartHandshake, Phone, Activity } from 'lucide-react'
 import type { Patient, PatientInput, Sexo } from '@/domain/patient/Patient'
 
 const emptyForm: PatientInput = {
@@ -13,8 +13,18 @@ const emptyForm: PatientInput = {
   fechaNacimiento: '',
   grupoSanguineo: 'O+',
   lateralidad: 'diestr@',
+  
+  // Demográficos Adicionales
+  estadoCivil: '',
+  escolaridad: '',
+  provincia: 'Pichincha',
+  canton: 'Quito',
+  parroquia: '',
+
+  // Laborales
   empresa: '',
   cargo: '',
+  areaDepartamento: '',
   institucionSistema: 'SISTEMA NACIONAL DE SALUD',
   rucEmpresa: '',
   ciiu: '',
@@ -23,6 +33,24 @@ const emptyForm: PatientInput = {
   fechaIngreso: '',
   numHistoriaClinica: '',
   numArchivo: '',
+
+  // Antecedentes
+  alergias: '',
+  antecedentesPatologicos: '',
+  antecedentesFamiliares: '',
+  medicacionHabitual: '',
+
+  // Hábitos
+  consumoTabaco: 'No consume',
+  consumoAlcohol: 'No consume',
+  actividadFisica: '',
+
+  // Gineco-Obstétricos
+  fum: '',
+  formulaObstetrica: '',
+  metodoAnticonceptivo: '',
+
+  // Vulnerabilidad y Emergencias
   atencionPrioritaria: {
     embarazada: false,
     discapacidad: false,
@@ -31,6 +59,11 @@ const emptyForm: PatientInput = {
     adultoMayor: false,
   },
   autorizaTransfusiones: 'SI',
+  contactoEmergenciaNombre: '',
+  contactoEmergenciaTelefono: '',
+  contactoEmergenciaParentesco: '',
+
+  // Contacto
   telefono: '',
   email: '',
   direccion: '',
@@ -44,7 +77,7 @@ interface PatientModalProps {
 }
 
 export function PatientModal({ open, patient, onClose, onSubmit }: PatientModalProps) {
-  const [activeTab, setActiveTab] = useState<'personales' | 'laborales' | 'prioritaria' | 'contacto'>('personales')
+  const [activeTab, setActiveTab] = useState<'personales' | 'laborales' | 'antecedentes' | 'prioritaria' | 'contacto'>('personales')
   const [form, setForm] = useState<PatientInput>(emptyForm)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -65,8 +98,16 @@ export function PatientModal({ open, patient, onClose, onSubmit }: PatientModalP
         fechaNacimiento: patient.fechaNacimiento || '',
         grupoSanguineo: patient.grupoSanguineo || 'O+',
         lateralidad: patient.lateralidad || 'diestr@',
+        
+        estadoCivil: patient.estadoCivil || '',
+        escolaridad: patient.escolaridad || '',
+        provincia: patient.provincia || 'Pichincha',
+        canton: patient.canton || 'Quito',
+        parroquia: patient.parroquia || '',
+
         empresa: patient.empresa || '',
         cargo: patient.cargo || '',
+        areaDepartamento: patient.areaDepartamento || '',
         institucionSistema: patient.institucionSistema || 'SISTEMA NACIONAL DE SALUD',
         rucEmpresa: patient.rucEmpresa || '',
         ciiu: patient.ciiu || '',
@@ -75,6 +116,20 @@ export function PatientModal({ open, patient, onClose, onSubmit }: PatientModalP
         fechaIngreso: patient.fechaIngreso || '',
         numHistoriaClinica: patient.numHistoriaClinica || '',
         numArchivo: patient.numArchivo || '',
+
+        alergias: patient.alergias || '',
+        antecedentesPatologicos: patient.antecedentesPatologicos || '',
+        antecedentesFamiliares: patient.antecedentesFamiliares || '',
+        medicacionHabitual: patient.medicacionHabitual || '',
+
+        consumoTabaco: patient.consumoTabaco || 'No consume',
+        consumoAlcohol: patient.consumoAlcohol || 'No consume',
+        actividadFisica: patient.actividadFisica || '',
+
+        fum: patient.fum || '',
+        formulaObstetrica: patient.formulaObstetrica || '',
+        metodoAnticonceptivo: patient.metodoAnticonceptivo || '',
+
         atencionPrioritaria: patient.atencionPrioritaria || {
           embarazada: false,
           discapacidad: false,
@@ -83,6 +138,10 @@ export function PatientModal({ open, patient, onClose, onSubmit }: PatientModalP
           adultoMayor: false,
         },
         autorizaTransfusiones: patient.autorizaTransfusiones || 'SI',
+        contactoEmergenciaNombre: patient.contactoEmergenciaNombre || '',
+        contactoEmergenciaTelefono: patient.contactoEmergenciaTelefono || '',
+        contactoEmergenciaParentesco: patient.contactoEmergenciaParentesco || '',
+
         telefono: patient.telefono || '',
         email: patient.email || '',
         direccion: patient.direccion || '',
@@ -97,7 +156,6 @@ export function PatientModal({ open, patient, onClose, onSubmit }: PatientModalP
   const setField = <K extends keyof PatientInput>(key: K, value: PatientInput[K]) => {
     setForm((prev) => {
       const updated = { ...prev, [key]: value }
-      // Auto-compute full nombre
       if (['primerApellido', 'segundoApellido', 'primerNombre', 'segundoNombre'].includes(key as string)) {
         const full = [updated.primerApellido, updated.segundoApellido, updated.primerNombre, updated.segundoNombre]
           .filter(Boolean)
@@ -136,6 +194,7 @@ export function PatientModal({ open, patient, onClose, onSubmit }: PatientModalP
     <div className="modal-overlay" role="presentation" onClick={onClose}>
       <div
         className="modal modal--wide"
+        style={{ maxWidth: '850px', width: '94%' }}
         role="dialog"
         aria-modal="true"
         aria-labelledby="patient-modal-title"
@@ -151,14 +210,14 @@ export function PatientModal({ open, patient, onClose, onSubmit }: PatientModalP
         </div>
 
         {/* Modal Section Tabs */}
-        <div className="patient-modal-tabs">
+        <div className="patient-modal-tabs" style={{ display: 'flex', overflowX: 'auto', gap: '0.4rem', padding: '0.5rem 1.25rem', background: '#f8fafc', borderBottom: '1px solid var(--border)' }}>
           <button
             type="button"
             className={`pm-tab-btn ${activeTab === 'personales' ? 'pm-tab-btn--active' : ''}`}
             onClick={() => setActiveTab('personales')}
           >
             <User size={16} />
-            <span>1. Filiación Personal</span>
+            <span>1. Filiación</span>
           </button>
           <button
             type="button"
@@ -166,7 +225,15 @@ export function PatientModal({ open, patient, onClose, onSubmit }: PatientModalP
             onClick={() => setActiveTab('laborales')}
           >
             <Briefcase size={16} />
-            <span>2. Datos Laborales &amp; Empresa</span>
+            <span>2. Laborales</span>
+          </button>
+          <button
+            type="button"
+            className={`pm-tab-btn ${activeTab === 'antecedentes' ? 'pm-tab-btn--active' : ''}`}
+            onClick={() => setActiveTab('antecedentes')}
+          >
+            <Activity size={16} />
+            <span>3. Antecedentes &amp; Hábitos</span>
           </button>
           <button
             type="button"
@@ -174,7 +241,7 @@ export function PatientModal({ open, patient, onClose, onSubmit }: PatientModalP
             onClick={() => setActiveTab('prioritaria')}
           >
             <HeartHandshake size={16} />
-            <span>3. Vulnerabilidad &amp; Emergencias</span>
+            <span>4. Vulnerabilidad</span>
           </button>
           <button
             type="button"
@@ -182,11 +249,11 @@ export function PatientModal({ open, patient, onClose, onSubmit }: PatientModalP
             onClick={() => setActiveTab('contacto')}
           >
             <Phone size={16} />
-            <span>4. Contacto</span>
+            <span>5. Contacto</span>
           </button>
         </div>
 
-        <form className="modal__body" onSubmit={handleSubmit}>
+        <form className="modal__body" onSubmit={handleSubmit} style={{ padding: '1.25rem' }}>
           {/* TAB 1: FILIACIÓN PERSONAL */}
           {activeTab === 'personales' && (
             <div className="form-grid">
@@ -260,6 +327,36 @@ export function PatientModal({ open, patient, onClose, onSubmit }: PatientModalP
               </label>
 
               <label className="field">
+                <span>Estado Civil</span>
+                <select
+                  value={form.estadoCivil}
+                  onChange={(e) => setField('estadoCivil', e.target.value)}
+                >
+                  <option value="">-- Seleccionar --</option>
+                  <option value="Soltero/a">Soltero/a</option>
+                  <option value="Casado/a">Casado/a</option>
+                  <option value="Divorciado/a">Divorciado/a</option>
+                  <option value="Unión de hecho">Unión de hecho</option>
+                  <option value="Viudo/a">Viudo/a</option>
+                </select>
+              </label>
+
+              <label className="field">
+                <span>Escolaridad / Nivel Instrucción</span>
+                <select
+                  value={form.escolaridad}
+                  onChange={(e) => setField('escolaridad', e.target.value)}
+                >
+                  <option value="">-- Seleccionar --</option>
+                  <option value="Primaria">Primaria completa</option>
+                  <option value="Secundaria">Secundaria / Bachillerato</option>
+                  <option value="Tercer Nivel">Tercer Nivel / Universidad</option>
+                  <option value="Cuarto Nivel">Cuarto Nivel / Posgrado</option>
+                  <option value="Sin instrucción">Sin instrucción</option>
+                </select>
+              </label>
+
+              <label className="field">
                 <span>Grupo Sanguíneo</span>
                 <select
                   value={form.grupoSanguineo}
@@ -287,6 +384,24 @@ export function PatientModal({ open, patient, onClose, onSubmit }: PatientModalP
                   <option value="ambidiestr@">Ambidiestr@</option>
                 </select>
               </label>
+
+              <label className="field">
+                <span>Provincia</span>
+                <input
+                  value={form.provincia}
+                  onChange={(e) => setField('provincia', e.target.value)}
+                  placeholder="Pichincha"
+                />
+              </label>
+
+              <label className="field">
+                <span>Cantón</span>
+                <input
+                  value={form.canton}
+                  onChange={(e) => setField('canton', e.target.value)}
+                  placeholder="Quito"
+                />
+              </label>
             </div>
           )}
 
@@ -309,6 +424,15 @@ export function PatientModal({ open, patient, onClose, onSubmit }: PatientModalP
                   value={form.empresa}
                   onChange={(e) => setField('empresa', e.target.value)}
                   placeholder="Ej. Constructora Andina S.A."
+                />
+              </label>
+
+              <label className="field">
+                <span>Área / Departamento</span>
+                <input
+                  value={form.areaDepartamento}
+                  onChange={(e) => setField('areaDepartamento', e.target.value)}
+                  placeholder="Ej. Planta de Producción / Mantenimiento"
                 />
               </label>
 
@@ -381,7 +505,115 @@ export function PatientModal({ open, patient, onClose, onSubmit }: PatientModalP
             </div>
           )}
 
-          {/* TAB 3: VULNERABILIDAD */}
+          {/* TAB 3: ANTECEDENTES Y HÁBITOS */}
+          {activeTab === 'antecedentes' && (
+            <div className="form-grid">
+              <label className="field field--span-2">
+                <span>Alergias a Medicamentos / Alimentos</span>
+                <input
+                  value={form.alergias}
+                  onChange={(e) => setField('alergias', e.target.value)}
+                  placeholder="Ej. Penicilina, Sulfa, Ninguna conocida"
+                />
+              </label>
+
+              <label className="field field--span-2">
+                <span>Antecedentes Patológicos y Quirúrgicos Personales</span>
+                <textarea
+                  rows={2}
+                  value={form.antecedentesPatologicos}
+                  onChange={(e) => setField('antecedentesPatologicos', e.target.value)}
+                  placeholder="Ej. Apendicectomía (2019), Hipertensión Arterial leve"
+                />
+              </label>
+
+              <label className="field field--span-2">
+                <span>Antecedentes Familiares</span>
+                <input
+                  value={form.antecedentesFamiliares}
+                  onChange={(e) => setField('antecedentesFamiliares', e.target.value)}
+                  placeholder="Ej. Padre: Hipertensión, Madre: Diabetes Tipo 2"
+                />
+              </label>
+
+              <label className="field">
+                <span>Medicación Habitual de Uso Continuo</span>
+                <input
+                  value={form.medicacionHabitual}
+                  onChange={(e) => setField('medicacionHabitual', e.target.value)}
+                  placeholder="Ej. Losartán 50mg/día"
+                />
+              </label>
+
+              <label className="field">
+                <span>Actividad Física / Ejercicio</span>
+                <input
+                  value={form.actividadFisica}
+                  onChange={(e) => setField('actividadFisica', e.target.value)}
+                  placeholder="Ej. Caminata 30 min (3 veces/semana)"
+                />
+              </label>
+
+              <label className="field">
+                <span>Consumo de Tabaco</span>
+                <select
+                  value={form.consumoTabaco}
+                  onChange={(e) => setField('consumoTabaco', e.target.value)}
+                >
+                  <option value="No consume">No consume</option>
+                  <option value="Ex-consumidor">Ex-consumidor</option>
+                  <option value="Fumador ocasional">Fumador ocasional</option>
+                  <option value="Fumador habitual">Fumador habitual</option>
+                </select>
+              </label>
+
+              <label className="field">
+                <span>Consumo de Alcohol</span>
+                <select
+                  value={form.consumoAlcohol}
+                  onChange={(e) => setField('consumoAlcohol', e.target.value)}
+                >
+                  <option value="No consume">No consume</option>
+                  <option value="Ocasional / Social">Ocasional / Social</option>
+                  <option value="Moderado">Moderado</option>
+                </select>
+              </label>
+
+              {form.sexo === 'F' && (
+                <>
+                  <div className="field field--span-2" style={{ marginTop: '0.5rem', fontWeight: 700, color: 'var(--primary)', borderBottom: '1px solid var(--border)', paddingBottom: '0.25rem' }}>
+                    ANTECEDENTES GINECO-OBSTÉTRICOS
+                  </div>
+                  <label className="field">
+                    <span>FUM (Última Menstruación)</span>
+                    <input
+                      type="date"
+                      value={form.fum}
+                      onChange={(e) => setField('fum', e.target.value)}
+                    />
+                  </label>
+                  <label className="field">
+                    <span>Fórmula Obstétrica (G_ P_ C_ A_)</span>
+                    <input
+                      value={form.formulaObstetrica}
+                      onChange={(e) => setField('formulaObstetrica', e.target.value)}
+                      placeholder="Ej. G2 P2 C0 A0"
+                    />
+                  </label>
+                  <label className="field">
+                    <span>Método Anticonceptivo</span>
+                    <input
+                      value={form.metodoAnticonceptivo}
+                      onChange={(e) => setField('metodoAnticonceptivo', e.target.value)}
+                      placeholder="Ej. DIU, Preservativo, Ninguno"
+                    />
+                  </label>
+                </>
+              )}
+            </div>
+          )}
+
+          {/* TAB 4: VULNERABILIDAD */}
           {activeTab === 'prioritaria' && (
             <div className="form-grid">
               <div className="field field--span-2">
@@ -448,10 +680,41 @@ export function PatientModal({ open, patient, onClose, onSubmit }: PatientModalP
                   </label>
                 </div>
               </div>
+
+              <div className="field field--span-2" style={{ marginTop: '0.75rem', fontWeight: 700, color: 'var(--primary)', borderBottom: '1px solid var(--border)', paddingBottom: '0.25rem' }}>
+                CONTACTO DE EMERGENCIA
+              </div>
+
+              <label className="field">
+                <span>Nombre del Contacto</span>
+                <input
+                  value={form.contactoEmergenciaNombre}
+                  onChange={(e) => setField('contactoEmergenciaNombre', e.target.value)}
+                  placeholder="Ej. Juan Carlos Rodríguez"
+                />
+              </label>
+
+              <label className="field">
+                <span>Teléfono de Emergencia</span>
+                <input
+                  value={form.contactoEmergenciaTelefono}
+                  onChange={(e) => setField('contactoEmergenciaTelefono', e.target.value)}
+                  placeholder="0998887766"
+                />
+              </label>
+
+              <label className="field">
+                <span>Parentesco</span>
+                <input
+                  value={form.contactoEmergenciaParentesco}
+                  onChange={(e) => setField('contactoEmergenciaParentesco', e.target.value)}
+                  placeholder="Ej. Cónyuge / Madre"
+                />
+              </label>
             </div>
           )}
 
-          {/* TAB 4: CONTACTO */}
+          {/* TAB 5: CONTACTO */}
           {activeTab === 'contacto' && (
             <div className="form-grid">
               <label className="field">

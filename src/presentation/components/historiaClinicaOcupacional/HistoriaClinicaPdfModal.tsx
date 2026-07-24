@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { Download, Printer, X, FileText, Check, ShieldCheck } from 'lucide-react'
+import { Download, Printer, X, FileText, ShieldCheck } from 'lucide-react'
 import type { HistoriaClinicaOcupacionalDocument } from '@/domain/historiaClinicaOcupacional/types'
 import { EXAMEN_FISICO_ESTRUCTURA } from './defaults'
 

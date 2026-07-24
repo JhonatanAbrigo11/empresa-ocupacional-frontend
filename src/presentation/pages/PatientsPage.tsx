@@ -51,21 +51,27 @@ export function PatientsPage() {
   }
 
   return (
-    <section className="page">
-      <div className="page__header">
-        <div>
-          <p className="page__eyebrow">
-            <Users size={16} /> Módulo
-          </p>
-          <h1>Pacientes</h1>
-          <p className="page__subtitle">
-            Lista de trabajadores registrados para exámenes ocupacionales.
-          </p>
+    <div className="page-container">
+      {/* Page Card Header matching reference image */}
+      <div className="page-card-header">
+        <div className="header-left">
+          <div className="header-icon-box">
+            <Users size={24} />
+          </div>
+          <div>
+            <h1 className="header-title">Pacientes</h1>
+            <p className="header-subtitle">
+              Lista de trabajadores registrados para exámenes ocupacionales.
+            </p>
+          </div>
         </div>
-        <button type="button" className="btn btn--primary" onClick={openCreate}>
-          <Plus size={18} />
-          Nuevo paciente
-        </button>
+
+        <div className="header-actions-wrap">
+          <button type="button" className="btn-primary-blue" onClick={openCreate}>
+            <Plus size={18} strokeWidth={2.5} />
+            <span>Nuevo paciente</span>
+          </button>
+        </div>
       </div>
 
       {error && <p className="form-error">{error}</p>}
@@ -101,6 +107,6 @@ export function PatientsPage() {
         }}
         onOpenHistory={openHistory}
       />
-    </section>
+    </div>
   )
 }

@@ -97,7 +97,7 @@ export function mapPatientToCertificado(patient: Patient): CertificadoOcupaciona
   initial.seccionB.fechaEmisionMes = m
   initial.seccionB.fechaEmisionDia = d
 
-  initial.seccionF.nombresApellidosTrab = `${patient.primerNombre} ${patient.primerApellido}`.trim() || patient.nombre
+  ;(initial.seccionF as any).nombresApellidosTrab = `${patient.primerNombre} ${patient.primerApellido}`.trim() || patient.nombre
   initial.seccionF.cedulaUsuario = patient.cedula || ''
 
   return initial

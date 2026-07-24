@@ -1,8 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, ShieldCheck } from 'lucide-react'
 import { useAuth } from '@/presentation/hooks/useAuth'
-import marcaLogo from '@/assets/documents/logoDocument.png'
 
 export function LoginPage() {
   const { user, loading, login } = useAuth()
@@ -10,6 +9,7 @@ export function LoginPage() {
   const [email, setEmail] = useState('admin@medocupacional.com')
   const [password, setPassword] = useState('admin123')
   const [showPassword, setShowPassword] = useState(false)
+  const [rememberMe, setRememberMe] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
@@ -30,82 +30,123 @@ export function LoginPage() {
   }
 
   return (
-    <div className="login-page">
-      <img
-        src={marcaLogo}
-        alt=""
-        aria-hidden
-        className="login-page__watermark"
-      />
+    <div className="login-split-page">
+      {/* Animated Blurred Ambient Background Orbs */}
+      <div className="login-bg-orb orb-1" aria-hidden="true" />
+      <div className="login-bg-orb orb-2" aria-hidden="true" />
+      <div className="login-bg-orb orb-3" aria-hidden="true" />
 
-      <div className="login-panel">
-        <div className="login-panel__top">
-          <img
-            src={marcaLogo}
-            alt="MedOcupacional"
-            className="login-panel__logo"
-          />
-          <p className="login-panel__brand">MedOcupacional</p>
-        </div>
+      <div className="login-split-card">
+        {/* Left Side: Blue Brand & Wave Graphic */}
+        <div className="login-left-side">
+          <div className="left-content">
+            <span className="left-welcome-eyebrow">Bienvenido a</span>
+            
+            {/* White Circle Logo Badge */}
+            <div className="left-logo-badge">
+              <img src="/Logo.jpeg" alt="MedOcupacional Logo" />
+            </div>
 
-        <form className="login-form" onSubmit={handleSubmit}>
-          <div className="login-form__intro">
-            <h1>Bienvenido</h1>
-            <p>Inicia sesión para continuar</p>
+            <h2 className="left-brand-title">MedOcupacional</h2>
+            <p className="left-brand-desc">
+              Plataforma integral de Salud Ocupacional, evaluación médica de trabajadores, emisión de historias clínicas y certificados de aptitud laboral.
+            </p>
           </div>
 
-          <label className="login-field">
-            <span>Correo electrónico</span>
-            <div className="login-field__control">
-              <Mail size={18} className="login-field__icon" aria-hidden />
-              <input
-                type="email"
-                autoComplete="username"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="ej. admin@medocupacional.com"
-              />
+          <div className="left-footer">
+            <span>MEDOCUPACIONAL</span>
+            <span className="divider">|</span>
+            <span>SALUD &amp; PREVENCIÓN</span>
+          </div>
+
+          {/* Organic Wave SVG Divider */}
+          <div className="wave-divider" aria-hidden="true">
+            <svg viewBox="0 0 100 500" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 0C30 80 80 120 40 220C-10 320 60 420 0 500H100V0H0Z" fill="#ffffff"/>
+            </svg>
+          </div>
+        </div>
+
+        {/* Right Side: Form */}
+        <div className="login-right-side">
+          <div className="form-header">
+            <h1>Iniciar Sesión</h1>
+            <p>Ingresa tus credenciales de acceso institucional</p>
+          </div>
+
+          <form className="login-form-body" onSubmit={handleSubmit}>
+            <label className="custom-login-field">
+              <span>Correo electrónico</span>
+              <div className="input-icon-wrapper">
+                <Mail size={18} className="field-left-icon" />
+                <input
+                  type="email"
+                  autoComplete="username"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="admin@medocupacional.com"
+                />
+              </div>
+            </label>
+
+            <label className="custom-login-field">
+              <span>Contraseña</span>
+              <div className="input-icon-wrapper">
+                <Lock size={18} className="field-left-icon" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  className="password-toggle-btn"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </label>
+
+            <div className="login-options">
+              <label className="checkbox-remember">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
+                <span>Recordar credenciales</span>
+              </label>
             </div>
-          </label>
 
-          <label className="login-field">
-            <span>Contraseña</span>
-            <div className="login-field__control">
-              <Lock size={18} className="login-field__icon" aria-hidden />
-              <input
-                type={showPassword ? 'text' : 'password'}
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-              />
-              <button
-                type="button"
-                className="login-field__toggle"
-                onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
+            {error && <p className="form-error">{error}</p>}
+
+            <button
+              type="submit"
+              className="split-login-submit-btn"
+              disabled={submitting}
+            >
+              {submitting ? 'Ingresando…' : 'Iniciar Sesión'}
+            </button>
+
+            {/* Quick Demo Access Box */}
+            <div className="demo-credentials-box">
+              <div className="demo-title">
+                <ShieldCheck size={16} />
+                <span>Credenciales de Prueba Demo</span>
+              </div>
+              <div className="demo-keys">
+                <span><strong>Usuario:</strong> admin@medocupacional.com</span>
+                <span><strong>Clave:</strong> admin123</span>
+              </div>
             </div>
-          </label>
-
-          {error && <p className="form-error">{error}</p>}
-
-          <button
-            type="submit"
-            className="btn btn--primary btn--block login-form__submit"
-            disabled={submitting}
-          >
-            {submitting ? 'Ingresando…' : 'Iniciar sesión'}
-          </button>
-
-          <p className="login-hint">
-            Demo: <code>admin@medocupacional.com</code> / <code>admin123</code>
-          </p>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   )

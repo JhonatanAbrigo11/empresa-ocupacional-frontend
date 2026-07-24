@@ -2,13 +2,9 @@ import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard,
   LogOut,
-  Stethoscope,
-  Menu,
-  X,
   Settings,
   UserCog,
   ChevronDown,
-  ClipboardList,
   Users,
   FileText,
   FileCheck,
@@ -16,20 +12,24 @@ import {
   FolderOpen,
   Pill,
   Syringe,
+  X,
+  Plus,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/presentation/hooks/useAuth'
 
 export function AppLayout() {
-  const { user, logout } = useAuth()
+  const { logout } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const [mobileOpen, setMobileOpen] = useState(false)
 
   const configActive = location.pathname.startsWith('/app/configuracion')
   const docsActive = location.pathname.startsWith('/app/documentos')
-  const [configExpanded, setConfigExpanded] = useState(configActive)
-  const [docsExpanded, setDocsExpanded] = useState(docsActive || true)
+  const [configExpanded, setConfigExpanded] = useState<boolean>(configActive)
+  const [docsExpanded, setDocsExpanded] = useState<boolean>(true)
+
+  // Mobile Bottom Sheet state for Documents
+  const [mobileDocsOpen, setMobileDocsOpen] = useState(false)
 
   useEffect(() => {
     if (configActive) setConfigExpanded(true)
@@ -41,247 +41,326 @@ export function AppLayout() {
     navigate('/login')
   }
 
-  const closeMobile = () => setMobileOpen(false)
-
   const toggleConfig = () => {
-    if (configActive) {
-      setConfigExpanded(true)
-      return
-    }
     setConfigExpanded((v) => !v)
   }
 
   const toggleDocs = () => {
-    if (docsActive) {
-      setDocsExpanded(true)
-      return
-    }
     setDocsExpanded((v) => !v)
   }
 
   return (
-    <div className="app-shell">
-      <aside className={`sidebar ${mobileOpen ? 'sidebar--mobile-open' : ''}`}>
-        <div className="sidebar__brand">
-          <span className="sidebar__brand-icon">
-            <Stethoscope size={22} strokeWidth={2} />
-          </span>
-          <div className="sidebar__label">
-            <strong>MedOcupacional</strong>
-            <span>Gestión clínica</span>
-          </div>
+    <div className="app-shell drive-theme">
+      {/* Brand Style Guide Collapsible Blue Sidebar (Desktop/Laptop) */}
+      <aside className="sidebar drive-sidebar">
+        {/* Brand Header with Logo / Banner Images */}
+        <div className="drive-sidebar__brand">
+          <img
+            src="/Logo.jpeg"
+            alt="MedOcupacional Logo"
+            className="drive-brand-logo"
+            title="MedOcupacional"
+          />
+          <img
+            src="/Banner.jpeg"
+            alt="MedOcupacional Banner"
+            className="drive-brand-banner"
+            title="MedOcupacional"
+          />
         </div>
 
-        <nav className="sidebar__nav">
+        {/* Navigation Items */}
+        <nav className="drive-sidebar__nav">
           <NavLink
             to="/app"
             end
             title="Inicio"
             className={({ isActive }) =>
-              `sidebar__link ${isActive ? 'sidebar__link--active' : ''}`
+              `drive-nav-item ${isActive ? 'drive-nav-item--active' : ''}`
             }
-            onClick={closeMobile}
           >
-            <LayoutDashboard size={18} className="sidebar__link-icon" />
-            <span className="sidebar__label">Inicio</span>
-          </NavLink>
-
-          <NavLink
-            to="/app/gestion-consultas"
-            title="Gestión de Consultas"
-            className={({ isActive }) =>
-              `sidebar__link ${isActive ? 'sidebar__link--active' : ''}`
-            }
-            onClick={closeMobile}
-          >
-            <ClipboardList size={18} className="sidebar__link-icon" />
-            <span className="sidebar__label">Gestión de Consultas</span>
+            <LayoutDashboard size={20} className="drive-nav-icon" />
+            <span className="drive-nav-text">Inicio</span>
           </NavLink>
 
           <NavLink
             to="/app/pacientes"
             title="Pacientes"
             className={({ isActive }) =>
-              `sidebar__link ${isActive ? 'sidebar__link--active' : ''}`
+              `drive-nav-item ${isActive ? 'drive-nav-item--active' : ''}`
             }
-            onClick={closeMobile}
           >
-            <Users size={18} className="sidebar__link-icon" />
-            <span className="sidebar__label">Pacientes</span>
+            <Users size={20} className="drive-nav-icon" />
+            <span className="drive-nav-text">Pacientes</span>
           </NavLink>
 
-          <div
-            className={`sidebar__group ${docsExpanded ? 'sidebar__group--open' : ''}`}
-          >
+          {/* Group: Documentos */}
+          <div className={`drive-nav-group ${docsExpanded ? 'drive-nav-group--open' : ''}`}>
             <button
               type="button"
-              className={`sidebar__link sidebar__group-toggle ${docsActive ? 'sidebar__link--parent-active' : ''}`}
+              className={`drive-nav-item drive-group-toggle ${docsActive ? 'drive-nav-item--parent-active' : ''}`}
               title="Documentos"
-              aria-expanded={docsExpanded}
               onClick={toggleDocs}
             >
-              <FileText size={18} className="sidebar__link-icon" />
-              <span className="sidebar__label">Documentos</span>
-              <ChevronDown size={16} className="sidebar__chevron sidebar__label" />
+              <FileText size={20} className="drive-nav-icon" />
+              <span className="drive-nav-text">Documentos</span>
+              <ChevronDown size={15} className="drive-chevron" />
             </button>
 
             {docsExpanded && (
-              <div className="sidebar__submenu">
+              <div className="drive-submenu">
                 <NavLink
                   to="/app/documentos/historial-clinico"
                   title="Historial Clínico"
                   className={({ isActive }) =>
-                    `sidebar__link sidebar__sublink ${isActive ? 'sidebar__link--active' : ''}`
+                    `drive-subitem ${isActive ? 'drive-subitem--active' : ''}`
                   }
-                  onClick={closeMobile}
                 >
-                  <FolderOpen size={18} className="sidebar__link-icon" />
-                  <span className="sidebar__label">Historial Clínico</span>
+                  <FolderOpen size={16} className="drive-subicon" />
+                  <span className="drive-subtext">Historial Clínico</span>
                 </NavLink>
 
                 <NavLink
                   to="/app/documentos/historia-clinica-ocupacional"
                   title="Historia Clínica Ocupacional"
                   className={({ isActive }) =>
-                    `sidebar__link sidebar__sublink ${isActive ? 'sidebar__link--active' : ''}`
+                    `drive-subitem ${isActive ? 'drive-subitem--active' : ''}`
                   }
-                  onClick={closeMobile}
                 >
-                  <FileCheck size={18} className="sidebar__link-icon" />
-                  <span className="sidebar__label">Historia Clínica Ocupacional</span>
+                  <FileCheck size={16} className="drive-subicon" />
+                  <span className="drive-subtext">Historia Ocupacional</span>
                 </NavLink>
 
                 <NavLink
                   to="/app/documentos/certificado-medico-ocupacional"
-                  title="Certificado - Evaluación Médica Ocupacional"
+                  title="Certificado Ocupacional"
                   className={({ isActive }) =>
-                    `sidebar__link sidebar__sublink ${isActive ? 'sidebar__link--active' : ''}`
+                    `drive-subitem ${isActive ? 'drive-subitem--active' : ''}`
                   }
-                  onClick={closeMobile}
                 >
-                  <FileCheck size={18} className="sidebar__link-icon" />
-                  <span className="sidebar__label">Certificado Ocupacional</span>
+                  <FileCheck size={16} className="drive-subicon" />
+                  <span className="drive-subtext">Certificado Ocupacional</span>
                 </NavLink>
 
                 <NavLink
                   to="/app/documentos/certificado-coproparasitario"
                   title="Certificado Coproparasitario"
                   className={({ isActive }) =>
-                    `sidebar__link sidebar__sublink ${isActive ? 'sidebar__link--active' : ''}`
+                    `drive-subitem ${isActive ? 'drive-subitem--active' : ''}`
                   }
-                  onClick={closeMobile}
                 >
-                  <Microscope size={18} className="sidebar__link-icon" />
-                  <span className="sidebar__label">Certificado Coproparasitario</span>
+                  <Microscope size={16} className="drive-subicon" />
+                  <span className="drive-subtext">Certificado Coproparasitario</span>
                 </NavLink>
 
                 <NavLink
                   to="/app/documentos/receta-medica"
                   title="Receta Médica"
                   className={({ isActive }) =>
-                    `sidebar__link sidebar__sublink ${isActive ? 'sidebar__link--active' : ''}`
+                    `drive-subitem ${isActive ? 'drive-subitem--active' : ''}`
                   }
-                  onClick={closeMobile}
                 >
-                  <Pill size={18} className="sidebar__link-icon" />
-                  <span className="sidebar__label">Receta Médica</span>
+                  <Pill size={16} className="drive-subicon" />
+                  <span className="drive-subtext">Receta Médica</span>
                 </NavLink>
 
                 <NavLink
                   to="/app/documentos/inmunizaciones"
-                  title="Registro de Inmunizaciones"
+                  title="Inmunizaciones"
                   className={({ isActive }) =>
-                    `sidebar__link sidebar__sublink ${isActive ? 'sidebar__link--active' : ''}`
+                    `drive-subitem ${isActive ? 'drive-subitem--active' : ''}`
                   }
-                  onClick={closeMobile}
                 >
-                  <Syringe size={18} className="sidebar__link-icon" />
-                  <span className="sidebar__label">Inmunizaciones</span>
+                  <Syringe size={16} className="drive-subicon" />
+                  <span className="drive-subtext">Inmunizaciones</span>
                 </NavLink>
               </div>
             )}
           </div>
 
-          <div
-            className={`sidebar__group ${configExpanded ? 'sidebar__group--open' : ''}`}
-          >
+          {/* Group: Configuración */}
+          <div className={`drive-nav-group ${configExpanded ? 'drive-nav-group--open' : ''}`}>
             <button
               type="button"
-              className={`sidebar__link sidebar__group-toggle ${configActive ? 'sidebar__link--parent-active' : ''}`}
+              className={`drive-nav-item drive-group-toggle ${configActive ? 'drive-nav-item--parent-active' : ''}`}
               title="Configuración"
-              aria-expanded={configExpanded}
               onClick={toggleConfig}
             >
-              <Settings size={18} className="sidebar__link-icon" />
-              <span className="sidebar__label">Configuración</span>
-              <ChevronDown size={16} className="sidebar__chevron sidebar__label" />
+              <Settings size={20} className="drive-nav-icon" />
+              <span className="drive-nav-text">Configuración</span>
+              <ChevronDown size={15} className="drive-chevron" />
             </button>
 
             {configExpanded && (
-              <div className="sidebar__submenu">
+              <div className="drive-submenu">
                 <NavLink
                   to="/app/configuracion/usuarios"
                   title="Usuarios"
                   className={({ isActive }) =>
-                    `sidebar__link sidebar__sublink ${isActive ? 'sidebar__link--active' : ''}`
+                    `drive-subitem ${isActive ? 'drive-subitem--active' : ''}`
                   }
-                  onClick={closeMobile}
                 >
-                  <UserCog size={18} className="sidebar__link-icon" />
-                  <span className="sidebar__label">Usuarios</span>
+                  <UserCog size={16} className="drive-subicon" />
+                  <span className="drive-subtext">Usuarios</span>
                 </NavLink>
               </div>
             )}
           </div>
         </nav>
 
-        <div className="sidebar__footer">
-          <div className="sidebar__user">
-            <span className="sidebar__avatar" title={user?.nombre}>
-              {user?.nombre.charAt(0) ?? 'U'}
-            </span>
-            <div className="sidebar__label sidebar__user-info">
-              <strong>{user?.nombre}</strong>
-              <span>{user?.email}</span>
-            </div>
-            <button
-              type="button"
-              className="btn btn--icon sidebar__logout"
-              onClick={handleLogout}
-              title="Cerrar sesión"
-            >
-              <LogOut size={16} />
-              <span className="sidebar__label sidebar__logout-text">Cerrar sesión</span>
-            </button>
-          </div>
+        {/* Clean Footer Logout Action */}
+        <div className="drive-sidebar__footer">
+          <button type="button" className="drive-logout-btn" title="Cerrar sesión" onClick={handleLogout}>
+            <LogOut size={18} />
+            <span className="drive-logout-text">Cerrar sesión</span>
+          </button>
         </div>
       </aside>
 
-      {mobileOpen && (
-        <button
-          type="button"
-          className="sidebar-backdrop"
-          aria-label="Cerrar menú"
-          onClick={() => setMobileOpen(false)}
-        />
-      )}
-
-      <div className="app-main">
-        <header className="topbar">
-          <button
-            type="button"
-            className="btn btn--icon topbar__menu"
-            onClick={() => setMobileOpen((v) => !v)}
-            aria-label="Abrir menú"
-          >
-            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
-          <p className="topbar__title">Panel de medicina ocupacional</p>
-        </header>
-        <main className="content">
+      {/* Main Content Area */}
+      <div className="app-main drive-main">
+        {/* Content Outlet */}
+        <main className="content drive-content">
           <Outlet />
         </main>
       </div>
+
+      {/* ==========================================================================
+          MOBILE BOTTOM NAVIGATOR BAR (MATCHING REFERENCE FAB FLOATING STYLE)
+          ========================================================================== */}
+      <nav className="mobile-bottom-navigator" aria-label="Navegación Móvil">
+        <NavLink
+          to="/app"
+          end
+          className={({ isActive }) =>
+            `mobile-bottom-item ${isActive ? 'mobile-bottom-item--active' : ''}`
+          }
+        >
+          <LayoutDashboard size={20} />
+          <span>Inicio</span>
+          <span className="active-dot" />
+        </NavLink>
+
+        <NavLink
+          to="/app/pacientes"
+          className={({ isActive }) =>
+            `mobile-bottom-item ${isActive ? 'mobile-bottom-item--active' : ''}`
+          }
+        >
+          <Users size={20} />
+          <span>Pacientes</span>
+          <span className="active-dot" />
+        </NavLink>
+
+        {/* Central Prominent Floating FAB Button */}
+        <div className="mobile-fab-wrapper">
+          <button
+            type="button"
+            className={`mobile-fab-button ${docsActive ? 'mobile-fab-button--active' : ''}`}
+            onClick={() => setMobileDocsOpen(true)}
+            aria-label="Abrir Módulos de Documentos"
+          >
+            <Plus size={26} strokeWidth={2.8} />
+          </button>
+          <span className={`mobile-fab-label ${docsActive ? 'mobile-fab-label--active' : ''}`}>
+            Documentos
+          </span>
+        </div>
+
+        <NavLink
+          to="/app/configuracion/usuarios"
+          className={({ isActive }) =>
+            `mobile-bottom-item ${isActive ? 'mobile-bottom-item--active' : ''}`
+          }
+        >
+          <UserCog size={20} />
+          <span>Usuarios</span>
+          <span className="active-dot" />
+        </NavLink>
+
+        <button type="button" className="mobile-bottom-item" onClick={handleLogout}>
+          <LogOut size={20} />
+          <span>Salir</span>
+          <span className="active-dot" />
+        </button>
+      </nav>
+
+      {/* Mobile Documents Quick Sheet Modal */}
+      {mobileDocsOpen && (
+        <div className="mobile-sheet-overlay" onClick={() => setMobileDocsOpen(false)}>
+          <div className="mobile-sheet-content" onClick={(e) => e.stopPropagation()}>
+            <div className="mobile-sheet-header">
+              <div className="mobile-sheet-title">
+                <FileText size={20} className="text-primary-blue" />
+                <h3>Módulos de Documentos</h3>
+              </div>
+              <button
+                type="button"
+                className="mobile-sheet-close"
+                onClick={() => setMobileDocsOpen(false)}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="mobile-sheet-grid">
+              <NavLink
+                to="/app/documentos/historial-clinico"
+                className="mobile-sheet-card"
+                onClick={() => setMobileDocsOpen(false)}
+              >
+                <FolderOpen size={22} />
+                <span>Historial Clínico</span>
+              </NavLink>
+
+              <NavLink
+                to="/app/documentos/historia-clinica-ocupacional"
+                className="mobile-sheet-card"
+                onClick={() => setMobileDocsOpen(false)}
+              >
+                <FileCheck size={22} />
+                <span>Historia Ocupacional</span>
+              </NavLink>
+
+              <NavLink
+                to="/app/documentos/certificado-medico-ocupacional"
+                className="mobile-sheet-card"
+                onClick={() => setMobileDocsOpen(false)}
+              >
+                <FileCheck size={22} />
+                <span>Certificado Ocupacional</span>
+              </NavLink>
+
+              <NavLink
+                to="/app/documentos/certificado-coproparasitario"
+                className="mobile-sheet-card"
+                onClick={() => setMobileDocsOpen(false)}
+              >
+                <Microscope size={22} />
+                <span>Certificado Coproparasitario</span>
+              </NavLink>
+
+              <NavLink
+                to="/app/documentos/receta-medica"
+                className="mobile-sheet-card"
+                onClick={() => setMobileDocsOpen(false)}
+              >
+                <Pill size={22} />
+                <span>Receta Médica</span>
+              </NavLink>
+
+              <NavLink
+                to="/app/documentos/inmunizaciones"
+                className="mobile-sheet-card"
+                onClick={() => setMobileDocsOpen(false)}
+              >
+                <Syringe size={22} />
+                <span>Inmunizaciones</span>
+              </NavLink>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

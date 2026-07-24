@@ -21,9 +21,17 @@ export interface Patient {
   grupoSanguineo: string
   lateralidad: 'zurd@' | 'diestr@' | 'ambidiestr@' | ''
   
+  // Datos Demográficos Adicionales
+  estadoCivil?: string
+  escolaridad?: string
+  provincia?: string
+  canton?: string
+  parroquia?: string
+
   // Datos Laborales y de Empresa
   empresa: string
   cargo: string
+  areaDepartamento?: string
   institucionSistema: string
   rucEmpresa: string
   ciiu: string
@@ -33,9 +41,28 @@ export interface Patient {
   numHistoriaClinica: string
   numArchivo: string
   
-  // Atención Prioritaria
+  // Antecedentes Médicos y Alergias
+  alergias?: string
+  antecedentesPatologicos?: string
+  antecedentesFamiliares?: string
+  medicacionHabitual?: string
+
+  // Hábitos y Estilo de Vida
+  consumoTabaco?: string
+  consumoAlcohol?: string
+  actividadFisica?: string
+
+  // Antecedentes Gineco-Obstétricos (Mujeres)
+  fum?: string
+  formulaObstetrica?: string
+  metodoAnticonceptivo?: string
+
+  // Atención Prioritaria y Emergencias
   atencionPrioritaria: AtencionPrioritariaInput
   autorizaTransfusiones: 'SI' | 'NO' | ''
+  contactoEmergenciaNombre?: string
+  contactoEmergenciaTelefono?: string
+  contactoEmergenciaParentesco?: string
 
   // Contacto
   telefono: string

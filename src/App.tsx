@@ -4,7 +4,6 @@ import { ProtectedRoute } from '@/presentation/components/auth/ProtectedRoute'
 import { AppLayout } from '@/presentation/components/layout/AppLayout'
 import { LoginPage } from '@/presentation/pages/LoginPage'
 import { DashboardPage } from '@/presentation/pages/DashboardPage'
-import { PatientManagementPage } from '@/presentation/pages/PatientManagementPage'
 import { PatientsPage } from '@/presentation/pages/PatientsPage'
 import { PatientProfilePage } from '@/presentation/pages/PatientProfilePage'
 import { HistoryFoldersPage } from '@/presentation/pages/HistoryFoldersPage'
@@ -27,10 +26,13 @@ export default function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/app" element={<AppLayout />}>
               <Route index element={<DashboardPage />} />
-              <Route path="gestion-consultas" element={<PatientManagementPage />} />
+              <Route
+                path="gestion-consultas"
+                element={<Navigate to="/app/pacientes" replace />}
+              />
               <Route
                 path="gestion-pacientes"
-                element={<Navigate to="/app/gestion-consultas" replace />}
+                element={<Navigate to="/app/pacientes" replace />}
               />
               <Route path="pacientes" element={<PatientsPage />} />
               <Route path="pacientes/:id" element={<PatientProfilePage />} />

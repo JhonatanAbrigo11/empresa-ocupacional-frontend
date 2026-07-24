@@ -86,84 +86,117 @@ export function UsersPage() {
   }
 
   return (
-    <section className="page">
-      <div className="page__header">
-        <div>
-          <p className="page__eyebrow">
-            <UserCog size={16} /> Configuración
-          </p>
-          <h1>Usuarios</h1>
-          <p className="page__subtitle">
-            Administra las cuentas con acceso al sistema.
-          </p>
+    <div className="page-container">
+      {/* Page Card Header matching reference image */}
+      <div className="page-card-header">
+        <div className="header-left">
+          <div className="header-icon-box">
+            <UserCog size={24} />
+          </div>
+          <div>
+            <h1 className="header-title">Usuarios del Sistema</h1>
+            <p className="header-subtitle">
+              Administración de roles, permisos y credenciales de acceso.
+            </p>
+          </div>
         </div>
-        <button type="button" className="btn btn--primary" onClick={openCreate}>
-          <Plus size={18} />
-          Nuevo usuario
-        </button>
+
+        <div className="header-actions-wrap">
+          <button
+            type="button"
+            className="btn-primary-blue"
+            onClick={openCreate}
+          >
+            <Plus size={18} strokeWidth={2.5} />
+            <span>Nuevo Usuario</span>
+          </button>
+        </div>
       </div>
 
-      {loading ? (
-        <div className="app-loading app-loading--inline">
-          <div className="spinner" />
-          <p>Cargando usuarios…</p>
-        </div>
-      ) : users.length === 0 ? (
-        <div className="empty-state">
-          <p>No hay usuarios registrados.</p>
-          <span>Crea el primer usuario del sistema.</span>
-        </div>
-      ) : (
-        <div className="table-wrap">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Correo</th>
-                <th>Rol</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user) => (
-                <tr key={user.id}>
-                  <td>
-                    <strong>{user.nombre}</strong>
-                  </td>
-                  <td>{user.email}</td>
-                  <td>{rolLabel(user.rol)}</td>
-                  <td>
-                    <span className={`status-pill ${user.activo ? 'status-pill--ok' : 'status-pill--off'}`}>
-                      {user.activo ? 'Activo' : 'Inactivo'}
-                    </span>
-                  </td>
-                  <td>
-                    <div className="row-actions">
-                      <button
-                        type="button"
-                        className="btn btn--icon"
-                        title="Editar"
-                        onClick={() => openEdit(user)}
-                      >
-                        <Pencil size={16} />
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn--icon btn--danger"
-                        title="Eliminar"
-                        onClick={() => handleDelete(user)}
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      {/* Page Card Body */}
+      <div className="page-card-body">
+        {loading ? (
+          <div className="app-loading app-loading--inline">
+            <div className="spinner" />
+            <p>Cargando usuarios…</p>
+          </div>
+        ) : users.length === 0 ? (
+          <div className="empty-state">
+            <p>No hay usuarios registrados.</p>
+            <span>Crea el primer usuario del sistema.</span>
+          </div>
+        ) : (
+          <>
+            <div className="table-wrap">
+              <table className="norm-table">
+                <thead>
+                  <tr>
+                    <th>NOMBRE</th>
+                    <th>CORREO ELECTRÓNICO</th>
+                    <th>ROL</th>
+                    <th>ESTADO</th>
+                    <th style={{ textAlign: 'center' }}>ACCIONES</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((user) => (
+                    <tr key={user.id}>
+                      <td className="col-name">
+                        <strong>{user.nombre}</strong>
+                      </td>
+                      <td style={{ color: '#334155' }}>{user.email}</td>
+                      <td style={{ fontWeight: 600, color: '#1d6bf3' }}>{rolLabel(user.rol)}</td>
+                      <td>
+                        <span className={`status-dot-badge ${user.activo ? 'status-dot-badge--active' : 'status-dot-badge--inactive'}`}>
+                          <span className="status-dot" /> {user.activo ? 'Activo' : 'Inactivo'}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="norm-action-group" style={{ justifyContent: 'center' }}>
+                          <button
+                            type="button"
+                            className="norm-action-btn"
+                            title="Editar"
+                            onClick={() => openEdit(user)}
+                          >
+                            <Pencil size={15} />
+                          </button>
+                          <button
+                            type="button"
+                            className="norm-action-btn norm-action-btn--danger"
+                            title="Eliminar"
+                            onClick={() => handleDelete(user)}
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination Footer */}
+            <div className="table-pagination-footer">
+              <span className="pagination-info">
+                Mostrando 1 a {users.length} de {users.length} resultados
+              </span>
+              <div className="pagination-controls">
+                <button type="button" className="page-btn" disabled>
+                  &lt;
+                </button>
+                <button type="button" className="page-num page-num--active">
+                  1
+                </button>
+                <button type="button" className="page-btn" disabled>
+                  &gt;
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
 
       {modalOpen && (
         <div className="modal-overlay" role="presentation" onClick={() => setModalOpen(false)}>
@@ -249,6 +282,6 @@ export function UsersPage() {
           </div>
         </div>
       )}
-    </section>
+    </div>
   )
 }

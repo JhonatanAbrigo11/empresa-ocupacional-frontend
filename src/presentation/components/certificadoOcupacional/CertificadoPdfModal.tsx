@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { Download, Printer, X, FileCheck, ShieldCheck } from 'lucide-react'
+import { Download, Printer, X, FileCheck } from 'lucide-react'
 import type { CertificadoOcupacionalDocument } from '@/domain/certificadoOcupacional/types'
 
 interface CertificadoPdfModalProps {
