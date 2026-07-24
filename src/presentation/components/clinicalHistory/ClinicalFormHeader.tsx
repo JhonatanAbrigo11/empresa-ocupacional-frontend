@@ -1,5 +1,5 @@
-import marcaLogo from '@/assets/marca.png'
-import headerMarca from '@/assets/headerMarca.png'
+import marcaLogo from '@/assets/documents/logoDocument.png'
+import headerMarca from '@/assets/documents/headerMarca.png'
 
 interface ClinicalFormHeaderProps {
   title: string
