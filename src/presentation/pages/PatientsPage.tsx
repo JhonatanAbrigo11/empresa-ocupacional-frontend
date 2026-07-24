@@ -1,18 +1,18 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Plus, Users } from 'lucide-react'
 import type { Patient, PatientInput } from '@/domain/patient/Patient'
 import { usePatients } from '@/presentation/hooks/usePatients'
 import { PatientTable } from '@/presentation/components/patients/PatientTable'
 import { PatientModal } from '@/presentation/components/patients/PatientModal'
 import { PatientProfileModal } from '@/presentation/components/patients/PatientProfileModal'
-import { HistoryFoldersModal } from '@/presentation/components/patients/HistoryFoldersModal'
 
 export function PatientsPage() {
+  const navigate = useNavigate()
   const { patients, loading, error, create, update, remove } = usePatients()
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState<Patient | null>(null)
   const [profileOpen, setProfileOpen] = useState(false)
-  const [historyOpen, setHistoryOpen] = useState(false)
   const [selected, setSelected] = useState<Patient | null>(null)
 
   const openCreate = () => {
@@ -31,9 +31,7 @@ export function PatientsPage() {
   }
 
   const openHistory = (patient: Patient) => {
-    setSelected(patient)
-    setProfileOpen(false)
-    setHistoryOpen(true)
+    navigate(`/app/pacientes/${patient.id}/historial`)
   }
 
   const handleSubmit = async (data: PatientInput) => {
@@ -99,18 +97,9 @@ export function PatientsPage() {
         patient={selected}
         onClose={() => {
           setProfileOpen(false)
-          if (!historyOpen) setSelected(null)
-        }}
-        onOpenHistory={openHistory}
-      />
-
-      <HistoryFoldersModal
-        open={historyOpen}
-        patient={selected}
-        onClose={() => {
-          setHistoryOpen(false)
           setSelected(null)
         }}
+        onOpenHistory={openHistory}
       />
     </section>
   )

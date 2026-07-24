@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import {
   FileCheck,
   Save,
@@ -6,15 +7,23 @@ import {
   Printer,
   CheckCircle,
   AlertCircle,
+  UserCheck,
 } from 'lucide-react'
 import type { CertificadoOcupacionalDocument } from '@/domain/certificadoOcupacional/types'
 import { createInitialCertificadoDocument } from '@/presentation/components/certificadoOcupacional/defaults'
+import { mapPatientToCertificado } from '@/domain/historiaClinicaOcupacional/patientMapper'
+import { usePatients } from '@/presentation/hooks/usePatients'
 import { CertificadoForm } from '@/presentation/components/certificadoOcupacional/CertificadoForm'
 import { CertificadoPdfModal } from '@/presentation/components/certificadoOcupacional/CertificadoPdfModal'
 
 const LOCAL_STORAGE_KEY = 'cert_ocupacional_draft_v1'
 
 export function CertificadoOcupacionalPage() {
+  const [searchParams] = useSearchParams()
+  const patientIdParam = searchParams.get('patientId')
+
+  const { patients } = usePatients()
+  const [selectedPatientId, setSelectedPatientId] = useState<string>('')
   const [showPdfModal, setShowPdfModal] = useState(false)
   const [doc, setDoc] = useState<CertificadoOcupacionalDocument>(() => {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEY)
@@ -31,10 +40,34 @@ export function CertificadoOcupacionalPage() {
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'info' } | null>(null)
 
   useEffect(() => {
+    if (!patientIdParam || patients.length === 0) return
+    const found = patients.find((p) => p.id === patientIdParam)
+    if (found) {
+      setSelectedPatientId(patientIdParam)
+      const populated = mapPatientToCertificado(found)
+      setDoc(populated)
+    }
+  }, [patientIdParam, patients])
+
+  useEffect(() => {
     if (!notification) return
     const timer = setTimeout(() => setNotification(null), 3500)
     return () => clearTimeout(timer)
   }, [notification])
+
+  const handleSelectPatient = (patientId: string) => {
+    setSelectedPatientId(patientId)
+    if (!patientId) return
+    const found = patients.find((p) => p.id === patientId)
+    if (found) {
+      const populated = mapPatientToCertificado(found)
+      setDoc(populated)
+      setNotification({
+        message: `Datos de Certificado autocompletados desde el registro de ${found.nombre || found.primerApellido}.`,
+        type: 'success',
+      })
+    }
+  }
 
   const handleSaveDraft = () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(doc))
@@ -48,6 +81,7 @@ export function CertificadoOcupacionalPage() {
     if (window.confirm('¿Está seguro de restablecer el certificado a sus valores por defecto? Se perderán los cambios no guardados.')) {
       const initial = createInitialCertificadoDocument()
       setDoc(initial)
+      setSelectedPatientId('')
       localStorage.removeItem(LOCAL_STORAGE_KEY)
       setNotification({
         message: 'Certificado restablecido correctamente.',
@@ -98,6 +132,27 @@ export function CertificadoOcupacionalPage() {
           <span>{notification.message}</span>
         </div>
       )}
+
+      {/* Patient Auto-Populate Selector */}
+      <div className="doc-patient-selector-bar">
+        <UserCheck size={20} className="text-primary" />
+        <div className="selector-info">
+          <strong>Cargar Datos de Paciente Registrado:</strong>
+          <span>Selecciona un paciente para autocompletar los datos del certificado automáticamente:</span>
+        </div>
+        <select
+          className="selector-dropdown"
+          value={selectedPatientId}
+          onChange={(e) => handleSelectPatient(e.target.value)}
+        >
+          <option value="">-- Seleccionar Paciente Registrado --</option>
+          {patients.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.nombre || `${p.primerApellido} ${p.primerNombre}`} (C.I. {p.cedula}) - {p.empresa}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {/* Patient & Certificate Summary Strip */}
       <div className="doc-summary-strip">

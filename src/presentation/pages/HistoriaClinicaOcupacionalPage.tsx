@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import {
   FileText,
   Save,
@@ -8,9 +9,12 @@ import {
   AlertCircle,
   FileSpreadsheet,
   ClipboardCheck,
+  UserCheck,
 } from 'lucide-react'
 import type { HistoriaClinicaOcupacionalDocument } from '@/domain/historiaClinicaOcupacional/types'
 import { createInitialDocument } from '@/presentation/components/historiaClinicaOcupacional/defaults'
+import { mapPatientToHistoriaClinica } from '@/domain/historiaClinicaOcupacional/patientMapper'
+import { usePatients } from '@/presentation/hooks/usePatients'
 import { Hoja1Form } from '@/presentation/components/historiaClinicaOcupacional/Hoja1Form'
 import { Hoja2Form } from '@/presentation/components/historiaClinicaOcupacional/Hoja2Form'
 import { Hoja3Form } from '@/presentation/components/historiaClinicaOcupacional/Hoja3Form'
@@ -19,6 +23,11 @@ import { HistoriaClinicaPdfModal } from '@/presentation/components/historiaClini
 const LOCAL_STORAGE_KEY = 'hco_document_draft_v1'
 
 export function HistoriaClinicaOcupacionalPage() {
+  const [searchParams] = useSearchParams()
+  const patientIdParam = searchParams.get('patientId')
+
+  const { patients } = usePatients()
+  const [selectedPatientId, setSelectedPatientId] = useState<string>('')
   const [activeTab, setActiveTab] = useState<'hoja1' | 'hoja2' | 'hoja3'>('hoja1')
   const [showPdfModal, setShowPdfModal] = useState(false)
   const [doc, setDoc] = useState<HistoriaClinicaOcupacionalDocument>(() => {
@@ -36,10 +45,34 @@ export function HistoriaClinicaOcupacionalPage() {
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'info' } | null>(null)
 
   useEffect(() => {
+    if (!patientIdParam || patients.length === 0) return
+    const found = patients.find((p) => p.id === patientIdParam)
+    if (found) {
+      setSelectedPatientId(patientIdParam)
+      const populated = mapPatientToHistoriaClinica(found)
+      setDoc(populated)
+    }
+  }, [patientIdParam, patients])
+
+  useEffect(() => {
     if (!notification) return
     const timer = setTimeout(() => setNotification(null), 3500)
     return () => clearTimeout(timer)
   }, [notification])
+
+  const handleSelectPatient = (patientId: string) => {
+    setSelectedPatientId(patientId)
+    if (!patientId) return
+    const found = patients.find((p) => p.id === patientId)
+    if (found) {
+      const populated = mapPatientToHistoriaClinica(found)
+      setDoc(populated)
+      setNotification({
+        message: `Datos autocompletados desde el registro de ${found.nombre || found.primerApellido}.`,
+        type: 'success',
+      })
+    }
+  }
 
   const handleSaveDraft = () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(doc))
@@ -53,6 +86,7 @@ export function HistoriaClinicaOcupacionalPage() {
     if (window.confirm('¿Está seguro de restablecer el formulario a sus valores por defecto? Se perderán los cambios no guardados.')) {
       const initial = createInitialDocument()
       setDoc(initial)
+      setSelectedPatientId('')
       localStorage.removeItem(LOCAL_STORAGE_KEY)
       setNotification({
         message: 'Formulario restablecido correctamente.',
@@ -103,6 +137,27 @@ export function HistoriaClinicaOcupacionalPage() {
           <span>{notification.message}</span>
         </div>
       )}
+
+      {/* Patient Auto-Populate Selector */}
+      <div className="doc-patient-selector-bar">
+        <UserCheck size={20} className="text-primary" />
+        <div className="selector-info">
+          <strong>Cargar Datos de Paciente Registrado:</strong>
+          <span>Selecciona un paciente para autocompletar la filiación, empresa y puesto en el formulario:</span>
+        </div>
+        <select
+          className="selector-dropdown"
+          value={selectedPatientId}
+          onChange={(e) => handleSelectPatient(e.target.value)}
+        >
+          <option value="">-- Seleccionar Paciente Registrado --</option>
+          {patients.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.nombre || `${p.primerApellido} ${p.primerNombre}`} (C.I. {p.cedula}) - {p.empresa}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {/* Patient & Document Summary Strip */}
       <div className="doc-summary-strip">
