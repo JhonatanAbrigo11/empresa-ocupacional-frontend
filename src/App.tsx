@@ -12,6 +12,10 @@ import { ClinicalHistoryPage } from '@/presentation/pages/ClinicalHistoryPage'
 import { UsersPage } from '@/presentation/pages/UsersPage'
 import { HistoriaClinicaOcupacionalPage } from '@/presentation/pages/HistoriaClinicaOcupacionalPage'
 import { CertificadoOcupacionalPage } from '@/presentation/pages/CertificadoOcupacionalPage'
+import { CertificadoCoproparasitarioPage } from '@/presentation/pages/CertificadoCoproparasitarioPage'
+import { DocumentoHistorialClinicoPage } from '@/presentation/pages/DocumentoHistorialClinicoPage'
+import { RecetaMedicaPage } from '@/presentation/pages/RecetaMedicaPage'
+import { InmunizacionesPage } from '@/presentation/pages/InmunizacionesPage'
 import '@/presentation/styles/app.css'
 
 export default function App() {
@@ -36,12 +40,40 @@ export default function App() {
                 element={<ClinicalHistoryPage />}
               />
               <Route
+                path="documentos/historial-clinico"
+                element={<DocumentoHistorialClinicoPage />}
+              />
+              <Route
+                path="documentos/historia-clinica"
+                element={<Navigate to="/app/documentos/historial-clinico" replace />}
+              />
+              <Route
+                path="documentos/examen-fisico"
+                element={<Navigate to="/app/documentos/historial-clinico" replace />}
+              />
+              <Route
+                path="documentos/imagenes"
+                element={<Navigate to="/app/documentos/historial-clinico" replace />}
+              />
+              <Route
                 path="documentos/historia-clinica-ocupacional"
                 element={<HistoriaClinicaOcupacionalPage />}
               />
               <Route
                 path="documentos/certificado-medico-ocupacional"
                 element={<CertificadoOcupacionalPage />}
+              />
+              <Route
+                path="documentos/certificado-coproparasitario"
+                element={<CertificadoCoproparasitarioPage />}
+              />
+              <Route
+                path="documentos/receta-medica"
+                element={<RecetaMedicaPage />}
+              />
+              <Route
+                path="documentos/inmunizaciones"
+                element={<InmunizacionesPage />}
               />
               <Route path="configuracion/usuarios" element={<UsersPage />} />
             </Route>

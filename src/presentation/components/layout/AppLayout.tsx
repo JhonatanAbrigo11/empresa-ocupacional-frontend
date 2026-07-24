@@ -12,6 +12,10 @@ import {
   Users,
   FileText,
   FileCheck,
+  Microscope,
+  FolderOpen,
+  Pill,
+  Syringe,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/presentation/hooks/useAuth'
@@ -23,23 +27,14 @@ export function AppLayout() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   const configActive = location.pathname.startsWith('/app/configuracion')
-  const [configExpanded, setConfigExpanded] = useState(configActive)
-
   const docsActive = location.pathname.startsWith('/app/documentos')
+  const [configExpanded, setConfigExpanded] = useState(configActive)
   const [docsExpanded, setDocsExpanded] = useState(docsActive || true)
 
   useEffect(() => {
     if (configActive) setConfigExpanded(true)
     if (docsActive) setDocsExpanded(true)
   }, [configActive, docsActive])
-
-  const toggleDocs = () => {
-    if (docsActive) {
-      setDocsExpanded(true)
-      return
-    }
-    setDocsExpanded((v) => !v)
-  }
 
   const handleLogout = async () => {
     await logout()
@@ -54,6 +49,14 @@ export function AppLayout() {
       return
     }
     setConfigExpanded((v) => !v)
+  }
+
+  const toggleDocs = () => {
+    if (docsActive) {
+      setDocsExpanded(true)
+      return
+    }
+    setDocsExpanded((v) => !v)
   }
 
   return (
@@ -125,6 +128,18 @@ export function AppLayout() {
             {docsExpanded && (
               <div className="sidebar__submenu">
                 <NavLink
+                  to="/app/documentos/historial-clinico"
+                  title="Historial Clínico"
+                  className={({ isActive }) =>
+                    `sidebar__link sidebar__sublink ${isActive ? 'sidebar__link--active' : ''}`
+                  }
+                  onClick={closeMobile}
+                >
+                  <FolderOpen size={18} className="sidebar__link-icon" />
+                  <span className="sidebar__label">Historial Clínico</span>
+                </NavLink>
+
+                <NavLink
                   to="/app/documentos/historia-clinica-ocupacional"
                   title="Historia Clínica Ocupacional"
                   className={({ isActive }) =>
@@ -146,6 +161,42 @@ export function AppLayout() {
                 >
                   <FileCheck size={18} className="sidebar__link-icon" />
                   <span className="sidebar__label">Certificado Ocupacional</span>
+                </NavLink>
+
+                <NavLink
+                  to="/app/documentos/certificado-coproparasitario"
+                  title="Certificado Coproparasitario"
+                  className={({ isActive }) =>
+                    `sidebar__link sidebar__sublink ${isActive ? 'sidebar__link--active' : ''}`
+                  }
+                  onClick={closeMobile}
+                >
+                  <Microscope size={18} className="sidebar__link-icon" />
+                  <span className="sidebar__label">Certificado Coproparasitario</span>
+                </NavLink>
+
+                <NavLink
+                  to="/app/documentos/receta-medica"
+                  title="Receta Médica"
+                  className={({ isActive }) =>
+                    `sidebar__link sidebar__sublink ${isActive ? 'sidebar__link--active' : ''}`
+                  }
+                  onClick={closeMobile}
+                >
+                  <Pill size={18} className="sidebar__link-icon" />
+                  <span className="sidebar__label">Receta Médica</span>
+                </NavLink>
+
+                <NavLink
+                  to="/app/documentos/inmunizaciones"
+                  title="Registro de Inmunizaciones"
+                  className={({ isActive }) =>
+                    `sidebar__link sidebar__sublink ${isActive ? 'sidebar__link--active' : ''}`
+                  }
+                  onClick={closeMobile}
+                >
+                  <Syringe size={18} className="sidebar__link-icon" />
+                  <span className="sidebar__label">Inmunizaciones</span>
                 </NavLink>
               </div>
             )}

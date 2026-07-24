@@ -78,7 +78,7 @@ code {
   border-radius: 4px;
 }
 
-/* ——— Buttons ——— */
+/* â€”â€”â€” Buttons â€”â€”â€” */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -147,78 +147,182 @@ code {
   color: var(--accent);
 }
 
-/* ——— Login ——— */
+/* Login */
 .login-page {
+  position: relative;
+  isolation: isolate;
   min-height: 100svh;
   display: grid;
   place-items: center;
   padding: 1.5rem;
-  background: #ffffff;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(56, 189, 248, 0.28), transparent 55%),
+    linear-gradient(165deg, #e0f2fe 0%, #f0f9ff 42%, #ffffff 100%);
+}
+
+.login-page__watermark {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: min(72vw, 520px);
+  height: auto;
+  transform: translate(-50%, -50%);
+  opacity: 0.07;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  filter: grayscale(0.15);
 }
 
 .login-panel {
+  position: relative;
+  z-index: 1;
   width: min(100%, 420px);
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 20px;
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 18px 40px rgba(3, 105, 161, 0.1);
+  backdrop-filter: blur(10px);
   overflow: hidden;
   animation: rise 0.45s ease-out;
 }
 
-.login-brand {
-  padding: 2rem 1.75rem 1.25rem;
-  background: #ffffff;
-  border-bottom: 1px solid var(--border);
-  color: var(--text);
+.login-panel__top {
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
+  gap: 0.45rem;
+  padding: 1.6rem 1.75rem 0.35rem;
 }
 
-.login-brand__logo {
-  width: 88px;
-  height: 88px;
+.login-panel__logo {
+  width: 64px;
+  height: 64px;
   object-fit: contain;
-  border-radius: 16px;
-  background: #000;
-  padding: 6px;
-  box-shadow: var(--shadow);
+  border-radius: 50%;
+  background: #0f172a;
+  padding: 5px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
 }
 
-.login-brand h1 {
-  color: var(--text-h);
-  margin-top: 0.85rem;
-  font-size: 1.85rem;
-}
-
-.login-brand p {
-  margin: 0.4rem 0 0;
-  color: var(--muted);
-  font-size: 0.95rem;
+.login-panel__brand {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--primary);
 }
 
 .login-form {
-  padding: 1.5rem 1.75rem 1.75rem;
+  padding: 0.85rem 1.75rem 1.75rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.login-form h2 {
-  font-size: 1.15rem;
+.login-form__intro {
+  text-align: center;
+  margin-bottom: 0.25rem;
+}
+
+.login-form__intro h1 {
+  margin: 0;
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--text-h);
+  letter-spacing: -0.02em;
+}
+
+.login-form__intro p {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  text-align: left;
+}
+
+.login-field > span {
+  font-size: 0.84rem;
   font-weight: 600;
+  color: var(--text-h);
+}
+
+.login-field__control {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-field__icon {
+  position: absolute;
+  left: 0.85rem;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.login-field__control input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.75rem 2.75rem 0.75rem 2.65rem;
+  background: #fff;
+  color: var(--text-h);
+  font: inherit;
+}
+
+.login-field__control input:focus {
+  outline: 2px solid var(--primary-soft);
+  border-color: var(--primary);
+}
+
+.login-field__toggle {
+  position: absolute;
+  right: 0.45rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.login-field__toggle:hover {
+  background: var(--surface);
+  color: var(--text-h);
+}
+
+.login-form__submit {
+  margin-top: 0.25rem;
+  min-height: 46px;
+  border-radius: 12px;
+  font-weight: 700;
 }
 
 .login-hint {
-  margin: 0;
-  font-size: 0.82rem;
+  margin: 0.15rem 0 0;
+  font-size: 0.8rem;
   color: var(--muted);
   text-align: center;
 }
 
-/* ——— Shell / Sidebar ——— */
+.login-hint code {
+  font-size: 0.76rem;
+}
+
+/* â€”â€”â€” Shell / Sidebar â€”â€”â€” */
 .app-shell {
   display: flex;
   min-height: 100svh;
@@ -331,7 +435,7 @@ code {
   transform: rotate(180deg);
 }
 
-/* Colapsado: submenú alineado con el resto de iconos */
+/* Colapsado: submenÃº alineado con el resto de iconos */
 .sidebar__submenu {
   display: flex;
   flex-direction: column;
@@ -364,7 +468,7 @@ code {
   font-weight: 600;
 }
 
-/* Expandido (hover): jerarquía indentada */
+/* Expandido (hover): jerarquÃ­a indentada */
 .sidebar:hover .sidebar__submenu {
   padding: 0.1rem 0 0.15rem 0.35rem;
   margin-left: 1.15rem;
@@ -547,7 +651,7 @@ code {
   flex: 1;
 }
 
-/* ——— Pages ——— */
+/* â€”â€”â€” Pages â€”â€”â€” */
 .page {
   animation: rise 0.35s ease-out;
 }
@@ -620,7 +724,7 @@ code {
   color: var(--muted);
 }
 
-/* ——— Table ——— */
+/* â€”â€”â€” Table â€”â€”â€” */
 .table-wrap {
   background: var(--bg-elevated);
   border: 1px solid var(--border);
@@ -706,7 +810,7 @@ code {
   font-size: 0.9rem;
 }
 
-/* ——— Modal ——— */
+/* â€”â€”â€” Modal â€”â€”â€” */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -801,7 +905,7 @@ code {
   font-size: 0.9rem;
 }
 
-/* ——— Clinical History Form ——— */
+/* â€”â€”â€” Clinical History Form â€”â€”â€” */
 .page--hc {
   width: 100%;
   max-width: none;
@@ -852,7 +956,7 @@ code {
   font-size: 0.82rem;
 }
 
-/* ——— Carpetas historial ——— */
+/* â€”â€”â€” Carpetas historial â€”â€”â€” */
 .folders-page {
   width: 100%;
 }
@@ -1254,7 +1358,7 @@ code {
   font-weight: 600;
 }
 
-/* ——— Laboratorio ——— */
+/* â€”â€”â€” Laboratorio â€”â€”â€” */
 .lab-table-wrap {
   overflow: auto;
   border-bottom: 1px solid #111;
@@ -1326,7 +1430,7 @@ code {
   outline: none;
 }
 
-/* ——— Imágenes ——— */
+/* â€”â€”â€” ImÃ¡genes â€”â€”â€” */
 .img-diag-head {
   display: grid;
   grid-template-columns: 3fr 1fr;
@@ -1435,7 +1539,7 @@ code {
   color: var(--muted);
 }
 
-/* ——— Perfil paciente ——— */
+/* â€”â€”â€” Perfil paciente â€”â€”â€” */
 .modal--folders {
   width: min(100%, 860px);
   max-height: min(92svh, 820px);
@@ -1564,7 +1668,7 @@ code {
   font-weight: 600;
 }
 
-/* ——— Loading ——— */
+/* â€”â€”â€” Loading â€”â€”â€” */
 .app-loading {
   min-height: 100svh;
   display: grid;
@@ -1613,7 +1717,7 @@ code {
   }
 }
 
-/* ——— Responsive ——— */
+/* â€”â€”â€” Responsive â€”â€”â€” */
 @media (max-width: 860px) {
   .sidebar {
     position: fixed;
@@ -1698,7 +1802,7 @@ code {
   }
 }
 
-/* ——— Historia Clínica Ocupacional Digitalized Document Styles ——— */
+/* â€”â€”â€” Historia ClÃ­nica Ocupacional Digitalized Document Styles â€”â€”â€” */
 .doc-page-header {
   display: flex;
   align-items: flex-start;
@@ -2386,7 +2490,7 @@ code {
   }
 }
 
-/* ——— PDF Preview Modal & A4 Printable Document Styling ——— */
+/* â€”â€”â€” PDF Preview Modal & A4 Printable Document Styling â€”â€”â€” */
 .pdf-modal-overlay {
   position: fixed;
   inset: 0;
@@ -2711,7 +2815,7 @@ code {
   font-size: 12px;
 }
 
-/* ——— Certificado Médico Ocupacional Specific PDF Styles ——— */
+/* â€”â€”â€” Certificado MÃ©dico Ocupacional Specific PDF Styles â€”â€”â€” */
 .pdf-cert-banner {
   background: #cbd5e1;
   border: 1px solid #94a3b8;
@@ -3307,4 +3411,487 @@ code {
 
 
 
+/* Certificado Coproparasitario */
+.page--document {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: rise 0.35s ease;
+}
 
+.copro-simple-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.copro-simple-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.15rem 1.15rem;
+}
+
+.copro-simple-card h2 {
+  margin: 0 0 0.85rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.copro-vitals-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.copro-aptitud-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-top: 0.35rem;
+}
+
+.copro-aptitud-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-weight: 600;
+  color: var(--text-h);
+  cursor: pointer;
+}
+
+.copro-aptitud-option input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary);
+}
+
+.letter-cert-sheet {
+  color: #111827;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12.5pt;
+  line-height: 1.45;
+}
+
+.letter-cert-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.letter-cert-header__logo {
+  width: 78px;
+  height: 78px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.letter-cert-header__brand {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.2rem;
+}
+
+.letter-cert-header__marca {
+  max-width: 100%;
+  width: min(420px, 100%);
+  height: auto;
+  object-fit: contain;
+}
+
+.letter-cert-header__slogan {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 11pt;
+  color: #0284c7;
+  font-style: italic;
+}
+
+.letter-cert-rule {
+  border: none;
+  border-top: 1.5px solid #94a3b8;
+  margin: 0.85rem 0 1rem;
+}
+
+.letter-cert-title {
+  margin: 0 0 0.85rem;
+  text-align: center;
+  font-size: 16pt;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.letter-cert-date {
+  margin: 0 0 1rem;
+  text-align: right;
+  font-size: 11.5pt;
+}
+
+.letter-cert-body {
+  margin: 0 0 1.1rem;
+  text-align: justify;
+}
+
+.letter-cert-fill {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.letter-cert-vitals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 1rem;
+  margin: 0 0 1rem;
+  font-size: 11pt;
+}
+
+.letter-cert-line { margin: 0 0 1rem; }
+
+.letter-cert-aptitud { margin: 0 0 1.1rem; }
+.letter-cert-aptitud p { margin: 0 0 0.45rem; }
+
+.letter-cert-aptitud ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.letter-cert-aptitud li {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.letter-cert-check {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid #334155;
+  display: inline-block;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.letter-cert-check.is-checked::after {
+  content: '\2713';
+  position: absolute;
+  inset: -4px 0 0 1px;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  color: #0f172a;
+}
+
+.letter-cert-closing { margin: 1.4rem 0 2.2rem; }
+
+.letter-cert-signature {
+  margin: 0 0 2rem;
+  text-align: center;
+}
+
+.letter-cert-signature p { margin: 0.15rem 0; }
+
+.letter-cert-footer {
+  margin-top: auto;
+  text-align: center;
+  color: #38bdf8;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9.5pt;
+  line-height: 1.35;
+}
+
+.letter-cert-footer p { margin: 0.15rem 0; }
+
+.letter-cert-footer__place {
+  font-weight: 700;
+  margin-top: 0.35rem !important;
+}
+
+@media (max-width: 900px) {
+  .copro-vitals-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Receta Medica */
+.pdf-modal-container--wide {
+  width: min(1100px, 100%);
+}
+
+.receta-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.receta-sheet__cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  min-height: 250mm;
+}
+
+.receta-panel {
+  padding: 8px 12px 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9.5pt;
+  color: #0f172a;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.receta-panel--left {
+  border-right: 1.5px dashed #94a3b8;
+  padding-right: 14px;
+}
+
+.receta-panel--right {
+  padding-left: 14px;
+}
+
+.receta-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.receta-panel__logo {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.receta-panel__brand {
+  flex: 1;
+  text-align: center;
+}
+
+.receta-panel__marca {
+  max-width: 160px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.receta-panel__center-name {
+  margin: 0.15rem 0 0;
+  font-size: 8.5pt;
+  color: #0284c7;
+  font-style: italic;
+}
+
+.receta-panel__num {
+  margin: 0.35rem 0 0.15rem;
+  color: #dc2626;
+  font-weight: 700;
+  font-size: 10pt;
+}
+
+.receta-panel__num span {
+  letter-spacing: 0.04em;
+}
+
+.receta-panel__title {
+  margin: 0.2rem 0 0.55rem;
+  text-align: center;
+  font-size: 13pt;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+.receta-panel__fecha {
+  margin: 0 0 0.55rem;
+  font-size: 9pt;
+}
+
+.receta-panel__fields p {
+  margin: 0 0 0.35rem;
+  line-height: 1.35;
+}
+
+.receta-panel__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.85rem;
+}
+
+.receta-panel__grow {
+  flex: 1;
+  min-width: 55%;
+}
+
+.receta-panel__body {
+  flex: 1;
+  margin-top: 0.55rem;
+  min-height: 140px;
+}
+
+.receta-panel__content {
+  margin: 0.35rem 0 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: inherit;
+  font-size: 9.5pt;
+  line-height: 1.45;
+  min-height: 120px;
+}
+
+.receta-panel__firma {
+  margin-top: 1.25rem;
+  text-align: center;
+  font-size: 9pt;
+}
+
+.receta-panel__firma-label {
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.receta-panel__firma p {
+  margin: 0.15rem 0;
+}
+
+.receta-panel__footer {
+  margin-top: 0.85rem;
+  text-align: center;
+  font-size: 7.5pt;
+  line-height: 1.3;
+  color: #334155;
+}
+
+.receta-panel__footer p {
+  margin: 0.1rem 0;
+}
+
+.receta-sheet__validity {
+  margin: 0.35rem 0 0;
+  text-align: center;
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #0f172a;
+}
+
+@media (max-width: 900px) {
+  .receta-sheet__cols {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .receta-panel--left {
+    border-right: none;
+    border-bottom: 1.5px dashed #94a3b8;
+    padding-right: 12px;
+    padding-bottom: 1rem;
+  }
+
+  .receta-panel--right {
+    padding-left: 12px;
+    padding-top: 1rem;
+  }
+}
+/* Inmunizaciones */
+.inm-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.inm-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 980px;
+  font-size: 0.82rem;
+}
+
+.inm-table th,
+.inm-table td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.45rem;
+  vertical-align: middle;
+}
+
+.inm-table th {
+  background: #e0f2fe;
+  color: var(--text-h);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.inm-table__vacuna {
+  background: #f8fafc;
+  min-width: 130px;
+  font-weight: 600;
+}
+
+.inm-table__dosis {
+  text-align: center;
+  font-weight: 700;
+  background: #f0f9ff;
+  white-space: nowrap;
+}
+
+.inm-table__check {
+  text-align: center;
+}
+
+.inm-table input[type='text'],
+.inm-table input[type='date'] {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 0.35rem 0.4rem;
+  background: #fff;
+  color: var(--text-h);
+  font: inherit;
+}
+
+.inm-table input[type='text']:focus,
+.inm-table input[type='date']:focus {
+  outline: 2px solid var(--primary-soft);
+  border-color: var(--primary);
+}
+
+.inm-table input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary);
+}
+
+.inm-note,
+.inm-pdf-note {
+  margin: 0.85rem 0 0;
+  font-size: 0.85rem;
+  color: var(--text);
+  font-style: italic;
+}
+
+.inm-pdf-sheet {
+  font-size: 10px;
+}
+
+.inm-pdf-table th,
+.inm-pdf-table td {
+  font-size: 8.5px !important;
+  padding: 3px 4px !important;
+}
+
+.inm-pdf-check {
+  text-align: center;
+  font-weight: 800;
+}
